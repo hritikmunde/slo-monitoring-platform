@@ -1,0 +1,44 @@
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  # Control plane node
+  - role: control-plane
+    extraPortMappings:
+      # Expose port range 30000-32000 for NodePort services
+      - containerPort: 30000
+        hostPort: 30000
+        protocol: TCP
+      - containerPort: 30001
+        hostPort: 30001
+        protocol: TCP
+      - containerPort: 30002
+        hostPort: 30002
+        protocol: TCP
+      - containerPort: 30090
+        hostPort: 30090
+        protocol: TCP
+      - containerPort: 30300
+        hostPort: 30300
+        protocol: TCP
+    kubeadmConfigPatches:
+      - |
+        kind: ClusterConfiguration
+        apiServer:
+          extraArgs:
+            enable-aggregator-routing: "true"
+        controllerManager:
+          extraArgs:
+            bind-address: "0.0.0.0"
+        scheduler:
+          extraArgs:
+            bind-address: "0.0.0.0"
+  # Worker node 1
+  - role: worker
+  # Worker node 2
+  - role: worker
+# Enable metrics-server compatible settings
+kubeadmConfigPatches:
+  - |
+    kind: KubeletConfiguration
+    serverTLSBootstrap: true
+    readOnlyPort: 10255

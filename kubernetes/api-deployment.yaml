@@ -38,4 +38,5 @@ spec:
   ports:
     - port: 80
       targetPort: 5001
+      name: metrics
   type: ClusterIP

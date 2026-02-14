@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from prometheus_client import Counter, Histogram, generate_latest
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Histogram, generate_latest
 import time
 import random
 
@@ -26,7 +26,7 @@ def health():
 @app.route('/metrics')
 def metrics():
     """Prometheus metrics endpoint"""
-    return generate_latest()
+    return generate_latest(), 200, {'Content-Type': CONTENT_TYPE_LATEST}
 
 @app.route('/api')
 def api():
